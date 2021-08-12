@@ -25,8 +25,8 @@ var (
 		}, nil,
 	)
 
-	reqCount = prometheus.NewCounterVec(
-		prometheus.CounterOpts{
+	reqCount = metrics.NewCounterVec(
+		&metrics.CounterOpts{
 			Namespace: namespace,
 			Name:      "http_request_count_total",
 			Help:      "Total number of HTTP requests made.",
