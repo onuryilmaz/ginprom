@@ -61,7 +61,6 @@ var (
 // init registers the prometheus metrics
 func init() {
 	legacyregistry.MustRegister(uptime)
-	legacyregistry.MustRegister(uptime)
 	legacyregistry.MustRegister(reqCount)
 	legacyregistry.MustRegister(reqDuration)
 	legacyregistry.MustRegister(reqSizeBytes)
