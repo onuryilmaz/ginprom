@@ -8,6 +8,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus"
+	"k8s.io/component-base/metrics"
+	"k8s.io/component-base/metrics/legacyregistry"
 )
 
 const namespace = "service"
@@ -15,8 +17,8 @@ const namespace = "service"
 var (
 	labels = []string{"status", "endpoint", "method"}
 
-	uptime = prometheus.NewCounterVec(
-		prometheus.CounterOpts{
+	uptime = metrics.NewCounterVec(
+		&metrics.CounterOpts{
 			Namespace: namespace,
 			Name:      "uptime",
 			Help:      "HTTP service uptime.",
@@ -31,24 +33,24 @@ var (
 		}, labels,
 	)
 
-	reqDuration = prometheus.NewHistogramVec(
-		prometheus.HistogramOpts{
+	reqDuration = metrics.NewHistogramVec(
+		&metrics.HistogramOpts{
 			Namespace: namespace,
 			Name:      "http_request_duration_seconds",
 			Help:      "HTTP request latencies in seconds.",
 		}, labels,
 	)
 
-	reqSizeBytes = prometheus.NewSummaryVec(
-		prometheus.SummaryOpts{
+	reqSizeBytes = metrics.NewSummaryVec(
+		&metrics.SummaryOpts{
 			Namespace: namespace,
 			Name:      "http_request_size_bytes",
 			Help:      "HTTP request sizes in bytes.",
 		}, labels,
 	)
 
-	respSizeBytes = prometheus.NewSummaryVec(
-		prometheus.SummaryOpts{
+	respSizeBytes = metrics.NewSummaryVec(
+		&metrics.SummaryOpts{
 			Namespace: namespace,
 			Name:      "http_response_size_bytes",
 			Help:      "HTTP response sizes in bytes.",
@@ -58,7 +60,12 @@ var (
 
 // init registers the prometheus metrics
 func init() {
-	prometheus.MustRegister(uptime, reqCount, reqDuration, reqSizeBytes, respSizeBytes)
+	legacyregistry.MustRegister(uptime)
+	legacyregistry.MustRegister(uptime)
+	legacyregistry.MustRegister(reqCount)
+	legacyregistry.MustRegister(reqDuration)
+	legacyregistry.MustRegister(reqSizeBytes)
+	legacyregistry.MustRegister(respSizeBytes)
 	go recordUptime()
 }
 
